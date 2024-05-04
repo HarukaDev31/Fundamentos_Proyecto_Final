@@ -90,18 +90,6 @@ public class SystemUpc {
                 //openFileSelector();
             }
         });
-
-        this.cmi1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
-                dialog.setVisible(true);
-                //openFileSelector();
-            }
-        });
-
-
-
         // Añadir menu a la barra de menu
         this.menuBar.add(this.file);
         this.mainContainer.setJMenuBar(this.menuBar);
