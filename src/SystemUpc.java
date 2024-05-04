@@ -25,8 +25,8 @@ public class SystemUpc {
     private JFrame mainContainer;
     private JPanel itemContainer,emptabNomAp,emptabempCode,emptabAfi;
     private JMenuBar menuBar;
-    private JMenu file;
-    private JMenuItem fmi1;
+    private JMenu file,config;
+    private JMenuItem fmi1,cmi1;
     private JTabbedPane tabbedPane;
     private JComponent empTab, payrollTab;
     private String empJsonUrl;
@@ -77,22 +77,34 @@ public class SystemUpc {
         // Create MenuBar
         this.menuBar = new JMenuBar();
         // Create Menu called File
+
+        /// Crear Menu,añadir submenu,agregar funcionalidad
         this.file = new JMenu("File");
-        // Add file attr to menu bar
-        this.menuBar.add(this.file);
-        // Set MenuBar attr as container menubar
-        this.mainContainer.setJMenuBar(this.menuBar);
-        /// Create Menu Item and add it to menu
         this.fmi1 = new JMenuItem("Importar Empleados");
         this.file.add(this.fmi1);
         this.fmi1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /*
+
                 JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
-                dialog.setVisible(true);*/
-                openFileSelector();
+                dialog.setVisible(true);
+                //openFileSelector();
             }
         });
+
+        this.cmi1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
+                dialog.setVisible(true);
+                //openFileSelector();
+            }
+        });
+
+
+
+        // Añadir menu a la barra de menu
+        this.menuBar.add(this.file);
+        this.mainContainer.setJMenuBar(this.menuBar);
         this.mainContainer.setVisible(true);
 
     }
@@ -315,7 +327,7 @@ public class SystemUpc {
     /**
      * Este metodo se encarga de crear un modal y añadirle los componentes que se le pasen
      * de forma vertical uno debajo de otro
-     * @param JComponent ...components -Los componentes que se mostraran en el modal
+     * @param components -Los componentes que se mostraran en el modal
      * @return JDialog -El modal creado
      * Uso:
      * JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
