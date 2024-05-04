@@ -23,14 +23,14 @@ import java.util.Iterator;
  */
 public class SystemUpc {
     private JFrame mainContainer;
-    private JPanel itemContainer;
+    private JPanel itemContainer,emptabNomAp,emptabempCode,emptabAfi;
     private JMenuBar menuBar;
     private JMenu file;
     private JMenuItem fmi1;
     private JTabbedPane tabbedPane;
     private JComponent empTab, payrollTab;
     private String empJsonUrl;
-    private JComboBox emptabNomAp,emptabempCode,emptabAfi;
+
     /**
      * Este es el constructor de clase, cuando se instancia un objeto de esta clase
      * se llama a esto
@@ -61,12 +61,12 @@ public class SystemUpc {
      */
     public void initBase() {
         // init main container
-        this.mainContainer = new JFrame("System Upc");
-        this.mainContainer.setSize(500, 500);
+        this.mainContainer = new JFrame(    "System Upc");
+        this.mainContainer.setSize(800, 500);
         this.mainContainer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // init item container
         this.itemContainer = new JPanel();
-        this.itemContainer.setSize(300, 300);
+        this.itemContainer.setSize(500, 500);
         this.itemContainer.setLayout(new BorderLayout());
         this.mainContainer.add(this.itemContainer);
     }
@@ -103,9 +103,9 @@ public class SystemUpc {
         this.empTab = createTab("emp.png", "Empleados");
         this.payrollTab = createTab("emp.png", "Boletas");
         this.itemContainer.add(this.tabbedPane);
-        this.emptabNomAp = createComboBox(new String[]{"Nombre asdasd asdasdasdsadasda","Apellido"});
-        this.emptabempCode = createComboBox(new String[]{"Nombre","Apellido"});
-        this.emptabAfi = createComboBox(new String[]{"Nombre","Apellido"});
+        this.emptabNomAp = createComboBox(new String[]{"Nombre asdasd asdasdasdsadasda","Apellido"},new JLabel("Filtrar por Nombre y Apellido:"));
+        this.emptabempCode = createComboBox(new String[]{"Nombre","Apellido"},new JLabel("Filtrar por Codigo de Empleado:"));
+        this.emptabAfi = createComboBox(new String[]{"Nombre","Apellido"},new JLabel("Filtrar por Afiliacion:"));
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(this.emptabNomAp);
@@ -303,9 +303,14 @@ public class SystemUpc {
         }
     }
 
-    private JComboBox createComboBox(String[] items){
+    private JPanel createComboBox(String[] items,JLabel label){
+
+        JPanel panel = new JPanel();
         JComboBox comboBox = new JComboBox(items);
-        return comboBox;
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(label);
+        panel.add(comboBox);
+        return panel;
     }
     /**
      * Este metodo se encarga de crear un modal y añadirle los componentes que se le pasen
@@ -326,7 +331,6 @@ public class SystemUpc {
         for (JComponent component : components) {
             dialog.add(component);
         }
-
         return dialog;
     }
 }
