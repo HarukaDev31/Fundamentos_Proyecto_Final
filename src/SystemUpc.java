@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.poi.ss.usermodel.*;
@@ -13,6 +14,9 @@ import java.io.FileNotFoundException;
 import org.json.*;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import java.util.Iterator;
+
 /**
  * Este metodo es usado para la inicializacion de la GUI.
  * Si deseas agregar nuevos componentes se tienen que agregar en esta clase
@@ -26,7 +30,7 @@ public class SystemUpc {
     private JTabbedPane tabbedPane;
     private JComponent empTab, payrollTab;
     private String empJsonUrl;
-
+    private JComboBox emptabNomAp,emptabempCode,emptabAfi;
     /**
      * Este es el constructor de clase, cuando se instancia un objeto de esta clase
      * se llama a esto
@@ -44,7 +48,7 @@ public class SystemUpc {
      * y crear el json de empleados
      */
     public void initSystem() {
-        initEmployeesFile(empJsonUrl);
+        initFile(empJsonUrl);
         initBase();
         initMenu();
         initTabbedPane();
@@ -83,6 +87,9 @@ public class SystemUpc {
         this.file.add(this.fmi1);
         this.fmi1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                /*
+                JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
+                dialog.setVisible(true);*/
                 openFileSelector();
             }
         });
@@ -93,9 +100,20 @@ public class SystemUpc {
     private void initTabbedPane() {
         this.tabbedPane = new JTabbedPane();
         this.tabbedPane.setTabPlacement(JTabbedPane.TOP);
-        createTab("emp.png", "Empleados", this.empTab);
-        createTab("emp.png", "Boletas", this.payrollTab);
+        this.empTab = createTab("emp.png", "Empleados");
+        this.payrollTab = createTab("emp.png", "Boletas");
         this.itemContainer.add(this.tabbedPane);
+        this.emptabNomAp = createComboBox(new String[]{"Nombre asdasd asdasdasdsadasda","Apellido"});
+        this.emptabempCode = createComboBox(new String[]{"Nombre","Apellido"});
+        this.emptabAfi = createComboBox(new String[]{"Nombre","Apellido"});
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(this.emptabNomAp);
+        panel.add(this.emptabempCode);
+        panel.add(this.emptabAfi);
+        this.empTab.add(panel);
+        getEmployees();
+
     }
 
     /**
@@ -103,15 +121,21 @@ public class SystemUpc {
      *
      * @param iconUrl  -La ruta de la imagen que se mostrara en el tab
      * @param tabName     -El titulo que se mostrara en el tab
-     * @param component -El componente que se mostrara en el tab
      */
-    private void createTab(String iconUrl, String tabName, JComponent component) {
+    private JComponent createTab(String iconUrl, String tabName) {
         ImageIcon icon = createImageIcon(iconUrl);
         ImageIcon resizedIcon = resizeImageIcon(icon, 50, 50);
-        component = makeTextPanel(tabName);
-        this.tabbedPane.addTab(tabName, resizedIcon, component,
-                "Does nothing");
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JComponent component = makeTextPanel(tabName);
 
+        panel.add(component);
+
+        // Añade cualquier otro componente aquí, uno debajo del otro
+
+        JScrollPane scrollPane = new JScrollPane(panel); // Si hay demasiados componentes para que quepan en la pantalla
+        this.tabbedPane.addTab(tabName, resizedIcon, scrollPane, "Does nothing");
+        return panel;
     }
 
     private ImageIcon createImageIcon(String path) {
@@ -152,6 +176,7 @@ public class SystemUpc {
                 JOptionPane.showMessageDialog(null, "Tipo de Archivo no valido");
                 return;
             }*/
+
             processExcelFile(selectedFile);
         }
     }
@@ -211,7 +236,7 @@ public class SystemUpc {
         }
         return "";
     }
-    private void initEmployeesFile(String filePath) {
+    private void initFile(String filePath) {
         File file = new File(filePath);
 
         // Check if the file exists
@@ -232,4 +257,76 @@ public class SystemUpc {
         }
     }
 
+    private void getEmployees(){
+        JTable table = new JTable();
+
+        // Crear un DefaultTableModel para el JTable
+        DefaultTableModel model = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Hacer que todas las celdas sean no editables
+                return false;
+            }
+        };
+
+        // Asignar el modelo al JTable
+        table.setModel(model);
+        //Read Json file
+        try (FileReader reader = new FileReader(this.empJsonUrl)) {
+            // Create JSON array from JSON file
+            JSONArray jsonArray = new JSONArray(new JSONTokener(reader));
+
+            // Get the first JSON object to set column names
+            JSONObject firstObject = jsonArray.getJSONObject(0);
+
+            // Set column names based on keys in the first JSON object
+            Iterator<String> keys = firstObject.keys();
+            while (keys.hasNext()) {
+                String columnName = keys.next();
+                model.addColumn(columnName);
+            }
+
+            // Fill the table model with data from JSON array
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject rowData = jsonArray.getJSONObject(i);
+                Object[] row = new Object[model.getColumnCount()];
+                for (int j = 0; j < model.getColumnCount(); j++) {
+                    row[j] = rowData.get(model.getColumnName(j));
+                }
+                model.addRow(row);
+            }
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            this.empTab.add(scrollPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JComboBox createComboBox(String[] items){
+        JComboBox comboBox = new JComboBox(items);
+        return comboBox;
+    }
+    /**
+     * Este metodo se encarga de crear un modal y añadirle los componentes que se le pasen
+     * de forma vertical uno debajo de otro
+     * @param JComponent ...components -Los componentes que se mostraran en el modal
+     * @return JDialog -El modal creado
+     * Uso:
+     * JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
+     * dialog.setVisible(true);
+     *
+     */
+    private JDialog createModal(JComponent ...components){
+        JDialog dialog = new JDialog();
+        dialog.setSize(300,300);
+        dialog.setModal(true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+        for (JComponent component : components) {
+            dialog.add(component);
+        }
+
+        return dialog;
+    }
 }
