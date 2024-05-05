@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 
+
 public class UIUtils {
     /**
      * Este metodo se encarga de crear un modal y añadirle los componentes que se le pasen
@@ -84,10 +85,7 @@ public class UIUtils {
                 return false;
             }
         };
-        //print all filters
-        for (TableFilter tableFilter : filter) {
-            System.out.println(tableFilter);
-        }
+
         // Asignar el modelo al JTable
         table.setModel(model);
         try {
@@ -121,7 +119,6 @@ public class UIUtils {
                 for (int j = 0; j < model.getColumnCount(); j++) {
                     row[j] = rowData.get(model.getColumnName(j));
                 }
-                System.out.println(row[0]);
                 model.addRow(row);
             }
             scrollPane.setViewportView(table);
