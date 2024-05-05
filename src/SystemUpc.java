@@ -34,6 +34,7 @@ public class SystemUpc {
     private TableFilter[] employeeFilters;
     private UIUtils utils = new UIUtils();
     private JScrollPane empScrollPane=new JScrollPane();
+
     /**
      * Este es el constructor de clase, cuando se instancia un objeto de esta clase
      * se llama a esto
@@ -76,6 +77,7 @@ public class SystemUpc {
         this.itemContainer.setSize(500, 500);
         this.itemContainer.setLayout(new BorderLayout());
         this.mainContainer.add(this.itemContainer);
+        //Comentario 1
     }
     /**
      * Este metodo se encarga de inicializar el menu y sus submenus
@@ -216,10 +218,10 @@ public class SystemUpc {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String fileExtension = getFileNameExtension(selectedFile.getName());
-            /*if (!fileExtension.equals("xlsx")) {
+            if (!fileExtension.equals("xlsx")) {
                 JOptionPane.showMessageDialog(null, "Tipo de Archivo no valido");
                 return;
-            }*/
+            }
 
             processExcelFile(selectedFile);
         }
@@ -320,7 +322,7 @@ public class SystemUpc {
 
     /**
      * Este metodo se encarga de obtener los datos de un archivo json
-     * @param  dataUrl -La ruta del archivo json
+         * @param  dataUrl -La ruta del archivo json
      * @return JSONArray -Los datos del archivo json
      */
     private JSONArray getJsonData(String dataUrl){
