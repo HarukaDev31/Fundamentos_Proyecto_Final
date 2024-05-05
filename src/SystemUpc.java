@@ -15,6 +15,7 @@ import org.json.*;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -30,7 +31,9 @@ public class SystemUpc {
     private JTabbedPane tabbedPane;
     private JComponent empTab, payrollTab;
     private String empJsonUrl;
-
+    private TableFilter[] employeeFilters;
+    private UIUtils utils = new UIUtils();
+    private JScrollPane empScrollPane=new JScrollPane();
     /**
      * Este es el constructor de clase, cuando se instancia un objeto de esta clase
      * se llama a esto
@@ -40,6 +43,10 @@ public class SystemUpc {
      */
     public SystemUpc(String empJsonUrl) {
         this.empJsonUrl = empJsonUrl;
+        this.employeeFilters = new TableFilter[]{
+                new TableFilter("empName", null),
+                new TableFilter("empCode", null),
+                new TableFilter("empAfiliation", null)};
         initSystem();
     }
     /**
@@ -85,7 +92,7 @@ public class SystemUpc {
         this.fmi1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
+                JDialog dialog=UIUtils.createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
                 dialog.setVisible(true);
                 //openFileSelector();
             }
@@ -96,24 +103,45 @@ public class SystemUpc {
         this.mainContainer.setVisible(true);
 
     }
-
+    /**
+     * Este metodo se encarga de inicializar el tabbedPane y sus tabs
+     */
     private void initTabbedPane() {
         this.tabbedPane = new JTabbedPane();
         this.tabbedPane.setTabPlacement(JTabbedPane.TOP);
         this.empTab = createTab("emp.png", "Empleados");
         this.payrollTab = createTab("emp.png", "Boletas");
         this.itemContainer.add(this.tabbedPane);
-        this.emptabNomAp = createComboBox(new String[]{"Nombre asdasd asdasdasdsadasda","Apellido"},new JLabel("Filtrar por Nombre y Apellido:"));
-        this.emptabempCode = createComboBox(new String[]{"Nombre","Apellido"},new JLabel("Filtrar por Codigo de Empleado:"));
-        this.emptabAfi = createComboBox(new String[]{"Nombre","Apellido"},new JLabel("Filtrar por Afiliacion:"));
+        this.emptabNomAp = UIUtils.createComboBox("Filtrar por Nombre o Apellido:", getDataFilter(this.empJsonUrl, "empName"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empName", this::filterFunction,this.empScrollPane);
+        this.emptabempCode = UIUtils.createComboBox("Filtrar por Codigo de Empleado:", getDataFilter(this.empJsonUrl, "empCode"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empCode", this::filterFunction,this.empScrollPane);
+        this.emptabAfi = UIUtils.createComboBox("Filtrar por Afiliacion:", getDataFilter(this.empJsonUrl, "empAfiliation"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empAfiliation", this::filterFunction,this.empScrollPane);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(this.emptabNomAp);
         panel.add(this.emptabempCode);
         panel.add(this.emptabAfi);
         this.empTab.add(panel);
-        getEmployees();
+//        getEmployees();
+        UIUtils.getTable(this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters,empScrollPane);
 
+    }
+    /**
+     * Este metodo se encarga de aplicar el filtro a la tabla
+     *
+     * @param filterColumns -Los filtros que se aplicaran a la tabla
+     * @param filter        -El filtro que se aplicara
+     */
+    private FilterInterface filterFunction(TableFilter[] filterColumns,TableFilter filter){
+
+        for (int i = 0; i < filterColumns.length; i++) {
+
+            if (filterColumns[i].getKey().equals(filter.getKey())) {
+                filterColumns[i] = filter;
+                break;
+            }
+        }
+        this.employeeFilters = filterColumns;
+        return null;
     }
 
     /**
@@ -137,7 +165,12 @@ public class SystemUpc {
         this.tabbedPane.addTab(tabName, resizedIcon, scrollPane, "Does nothing");
         return panel;
     }
-
+    /**
+     * Este metodo se encarga de crear un ImageIcon a partir de una ruta
+     *
+     * @param path -La ruta de la imagen
+     * @return ImageIcon -La imagen creada
+     */
     private ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = getClass().getClassLoader().getResource(path);
         if (imgURL != null) {
@@ -148,12 +181,24 @@ public class SystemUpc {
         }
     }
 
+    /**
+     *  Este metodo se encarga de crear un panel con un texto
+     * @param text
+     * @return
+     */
     private JPanel makeTextPanel(String text) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setLayout(new GridLayout(1, 1));
         return panel;
     }
-
+    /**
+     * Este metodo se encarga de redimensionar una imagen
+     *
+     * @param icon   -La imagen que se redimensionara
+     * @param width  -El ancho de la imagen
+     * @param height -El alto de la imagen
+     * @return ImageIcon -La imagen redimensionada
+     */
     private ImageIcon resizeImageIcon(ImageIcon icon, int width, int height) {
         Image image = icon.getImage();
         Image newImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -170,7 +215,6 @@ public class SystemUpc {
         int returnValue = fileChooser.showOpenDialog(mainContainer);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
             String fileExtension = getFileNameExtension(selectedFile.getName());
             /*if (!fileExtension.equals("xlsx")) {
                 JOptionPane.showMessageDialog(null, "Tipo de Archivo no valido");
@@ -180,6 +224,12 @@ public class SystemUpc {
             processExcelFile(selectedFile);
         }
     }
+    /**
+     * Este metodo se encarga de obtener la extension de un archivo
+     *
+     * @param filename -El nombre del archivo
+     * @return String -La extension del archivo
+     */
     private String getFileNameExtension(String filename) {
         int lastDotIndex = filename.lastIndexOf(".");
         if (lastDotIndex == -1)
@@ -224,6 +274,12 @@ public class SystemUpc {
             e.printStackTrace();
         }
     }
+    /**
+     * Este metodo se encarga de obtener el valor de una celda
+     *
+     * @param cell -La celda de la que se obtendra el valor
+     * @return String -El valor de la celda
+     */
     private String getCellValue(Cell cell) {
         if (cell.getCellType() == CellType.STRING) {
             return cell.getStringCellValue();
@@ -236,6 +292,11 @@ public class SystemUpc {
         }
         return "";
     }
+    /**
+     * Este metodo se encarga de inicializar un archivo
+     *
+     * @param filePath -La ruta del archivo
+     */
     private void initFile(String filePath) {
         File file = new File(filePath);
 
@@ -257,80 +318,48 @@ public class SystemUpc {
         }
     }
 
-    private void getEmployees(){
-        JTable table = new JTable();
-
-        // Crear un DefaultTableModel para el JTable
-        DefaultTableModel model = new DefaultTableModel(){
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Hacer que todas las celdas sean no editables
-                return false;
-            }
-        };
-
-        // Asignar el modelo al JTable
-        table.setModel(model);
-        //Read Json file
-        try (FileReader reader = new FileReader(this.empJsonUrl)) {
+    /**
+     * Este metodo se encarga de obtener los datos de un archivo json
+     * @param  dataUrl -La ruta del archivo json
+     * @return JSONArray -Los datos del archivo json
+     */
+    private JSONArray getJsonData(String dataUrl){
+        try (FileReader reader = new FileReader(dataUrl)) {
             // Create JSON array from JSON file
-            JSONArray jsonArray = new JSONArray(new JSONTokener(reader));
-
-            // Get the first JSON object to set column names
-            JSONObject firstObject = jsonArray.getJSONObject(0);
-
-            // Set column names based on keys in the first JSON object
-            Iterator<String> keys = firstObject.keys();
-            while (keys.hasNext()) {
-                String columnName = keys.next();
-                model.addColumn(columnName);
-            }
-
-            // Fill the table model with data from JSON array
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject rowData = jsonArray.getJSONObject(i);
-                Object[] row = new Object[model.getColumnCount()];
-                for (int j = 0; j < model.getColumnCount(); j++) {
-                    row[j] = rowData.get(model.getColumnName(j));
-                }
-                model.addRow(row);
-            }
-
-            JScrollPane scrollPane = new JScrollPane(table);
-            this.empTab.add(scrollPane);
+            return new JSONArray(new JSONTokener(reader));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
-
-    private JPanel createComboBox(String[] items,JLabel label){
-
-        JPanel panel = new JPanel();
-        JComboBox comboBox = new JComboBox(items);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(label);
-        panel.add(comboBox);
-        return panel;
-    }
-    /**
-     * Este metodo se encarga de crear un modal y añadirle los componentes que se le pasen
-     * de forma vertical uno debajo de otro
-     * @param components -Los componentes que se mostraran en el modal
-     * @return JDialog -El modal creado
-     * Uso:
-     * JDialog dialog=createModal(new JLabel("Label 1"), new JTextField("Text 1"), new JLabel("Label 2"), new JTextField("Text 2"));
-     * dialog.setVisible(true);
-     *
+   /**
+     * Este metodo se encarga de obtener los datos de un archivo json y filtrarlos por una columna
+     * @param  dataUrl -La ruta del archivo json
+     * @param  column -La columna de la que se obtendran los datos
+     * @return String[] -Los datos del archivo json
+    *  Uso: getDataFilter("src/employees.json","empName");
      */
-    private JDialog createModal(JComponent ...components){
-        JDialog dialog = new JDialog();
-        dialog.setSize(300,300);
-        dialog.setModal(true);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-        for (JComponent component : components) {
-            dialog.add(component);
+    private String[] getDataFilter(String dataUrl,String column){
+        try  {
+            // Create JSON array from JSON file
+            JSONArray jsonArray = getJsonData(dataUrl);
+            String[] data = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject rowData = jsonArray.getJSONObject(i);
+                //check is same column is already added
+                if (Arrays.asList(data).contains(rowData.get(column).toString())) {
+                    continue;
+                }
+                data[i] = rowData.get(column).toString();
+            }
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return dialog;
     }
+
+
+
+
 }
