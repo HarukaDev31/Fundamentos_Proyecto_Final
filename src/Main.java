@@ -10,7 +10,7 @@ public class Main {
        String configString = sysUpc.getJsonDataString("src/config.json");
        try{
            JSONObject configJson = new JSONObject(configString);
-           Double uit = configJson.getDouble("uit");
+           double uit = configJson.getDouble("uit");
            JSONArray segmentsJson = configJson.getJSONArray("segments");
            Segment[] segments = new Segment[segmentsJson.length()];
               for (int i = 0; i < segmentsJson.length(); i++) {
@@ -46,7 +46,7 @@ public class Main {
                 Config config = new Config(uit, segments, affiliations, essalud, gratificationMonths, ctsMonths);
                 String SystemDate = "2024-07-01";
                 Payroll payroll = new Payroll(emp, config, SystemDate);
-           System.out.println(payroll.getFifthCategory());
+                payroll.generatePayrollJson();
        }catch (Exception e) {
            System.out.println("Error: " + e.getMessage());
        }

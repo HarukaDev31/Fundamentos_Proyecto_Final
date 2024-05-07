@@ -7,7 +7,7 @@ public class Config {
     private double essalud;
     private int[] gratificationMonths;
     private int[] ctsMonths;
-    public Config(Double uit, Segment[] segments, Affiliation[] affiliations, double essalud, int[] gratificationMonths, int[] ctsMonths) {
+    public Config(double uit, Segment[] segments, Affiliation[] affiliations, double essalud, int[] gratificationMonths, int[] ctsMonths) {
         this.uit = uit;
         this.segments = segments;
         this.affiliations = affiliations;
@@ -31,6 +31,14 @@ public class Config {
     }
     public Affiliation[] getAffiliations() {
         return affiliations;
+    }
+    public Affiliation getAffiliation(int id) {
+        for (Affiliation affiliation : affiliations) {
+            if (affiliation.getId() == id) {
+                return affiliation;
+            }
+        }
+        return null;
     }
     public double getEssalud() {
         return essalud;

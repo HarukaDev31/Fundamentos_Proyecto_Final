@@ -1,6 +1,7 @@
 package Models;
 
 public class Employee {
+
     private String empLastName;
     private String empCode;
     private String empName;
@@ -43,6 +44,9 @@ public class Employee {
     }
     public int getStartMonth() {
         return Integer.parseInt(dateStart.substring(5, 7));
+    }
+    public int getStartDay() {
+        return Integer.parseInt(dateStart.substring(8, 10));
     }
     public String toString() {
         System.out.println("Employee: " + empLastName + " " + empCode + " " + empName + " " + empSalary + " " + empEmail + " " + empAffiliation + " " + dateStart);

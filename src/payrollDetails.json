@@ -1,0 +1,140 @@
+[
+  {
+    "systemDate": "2024-07-01",
+    "payrollDetailConcepts": [
+      {
+        "conceptName": "Sueldo",
+        "conceptAmount": 30000,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "CTS",
+        "conceptAmount": 0,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Essalud",
+        "conceptAmount": 2700,
+        "conceptType": 3
+      },
+      {
+        "conceptName": "Gratificacion",
+        "conceptAmount": 32700,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Quinta Categoria",
+        "conceptAmount": 0,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "ONP",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Total Descuentos",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Neto a Pagar",
+        "conceptAmount": 142387.5,
+        "conceptType": 1
+      }
+    ],
+    "employeeId": "E001"
+  },
+  {
+    "systemDate": "2024-07-01",
+    "payrollDetailConcepts": [
+      {
+        "conceptName": "Sueldo",
+        "conceptAmount": 30000,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "CTS",
+        "conceptAmount": 0,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Essalud",
+        "conceptAmount": 2700,
+        "conceptType": 3
+      },
+      {
+        "conceptName": "Gratificacion",
+        "conceptAmount": 32700,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Quinta Categoria",
+        "conceptAmount": 0,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "ONP",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Total Descuentos",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Neto a Pagar",
+        "conceptAmount": 142387.5,
+        "conceptType": 1
+      }
+    ],
+    "employeeId": "E001"
+  },
+  {
+    "systemDate": "2024-07-01",
+    "payrollDetailConcepts": [
+      {
+        "conceptName": "Sueldo",
+        "conceptAmount": 30000,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "CTS",
+        "conceptAmount": 0,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Essalud",
+        "conceptAmount": 2700,
+        "conceptType": 3
+      },
+      {
+        "conceptName": "Gratificacion",
+        "conceptAmount": 32700,
+        "conceptType": 1
+      },
+      {
+        "conceptName": "Quinta Categoria",
+        "conceptAmount": 0,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "ONP",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Total Descuentos",
+        "conceptAmount": 3900,
+        "conceptType": 2
+      },
+      {
+        "conceptName": "Neto a Pagar",
+        "conceptAmount": 142387.5,
+        "conceptType": 1
+      }
+    ],
+    "employeeId": "E001"
+  }
+]
