@@ -47,7 +47,7 @@ public class SystemUpc {
         this.employeeFilters = new TableFilter[]{
                 new TableFilter("empName", null),
                 new TableFilter("empCode", null),
-                new TableFilter("empAfiliation", null)};
+                new TableFilter("empAffiliation", null)};
         initSystem();
     }
     /**
@@ -116,7 +116,7 @@ public class SystemUpc {
         this.itemContainer.add(this.tabbedPane);
         this.emptabNomAp = UIUtils.createComboBox("Filtrar por Nombre o Apellido:", getDataFilter(this.empJsonUrl, "empName"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empName", this::filterFunction,this.empScrollPane);
         this.emptabempCode = UIUtils.createComboBox("Filtrar por Codigo de Empleado:", getDataFilter(this.empJsonUrl, "empCode"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empCode", this::filterFunction,this.empScrollPane);
-        this.emptabAfi = UIUtils.createComboBox("Filtrar por Afiliacion:", getDataFilter(this.empJsonUrl, "empAfiliation"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empAfiliation", this::filterFunction,this.empScrollPane);
+        this.emptabAfi = UIUtils.createComboBox("Filtrar por Afiliacion:", getDataFilter(this.empJsonUrl, "empAffiliation"), this.empTab, getJsonData(this.empJsonUrl), this.employeeFilters, "empAfiliation", this::filterFunction,this.empScrollPane);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(this.emptabNomAp);
@@ -329,6 +329,15 @@ public class SystemUpc {
         try (FileReader reader = new FileReader(dataUrl)) {
             // Create JSON array from JSON file
             return new JSONArray(new JSONTokener(reader));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String getJsonDataString(String dataUrl){
+        try (FileReader reader = new FileReader(dataUrl)) {
+            // Create JSON array from JSON file
+                return new JSONObject(new JSONTokener(reader)).toString(2);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

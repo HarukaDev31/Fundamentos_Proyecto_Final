@@ -5,7 +5,8 @@
     "empName": "Francis ",
     "empSalary": "3000.0",
     "empRole": "Software Engineer",
-    "empAfiliation": "AFP"
+    "empAffiliation": 2,
+    "dateStart": "2024-04-01"
   },
   {
     "empLastName": "Flores",
@@ -13,7 +14,8 @@
     "empName": "Johanna",
     "empSalary": "2000.0",
     "empRole": "Graphic Designer",
-    "empAfiliation": "AFP"
+    "empAffiliation":3,
+    "dateStart": "2021-05-01"
   },
   {
     "empLastName": "Alvares",
@@ -21,6 +23,7 @@
     "empName": "Victor ",
     "empSalary": "2500.0",
     "empRole": "Product Manager",
-    "empAfiliation": "ONP"
+    "empAffiliation": 1,
+    "dateStart": "2024-07-01"
   }
 ]
